@@ -1,24 +1,22 @@
 import { LitElement, html, css } from 'lit-element';
 
-
 class FomoSignUp extends LitElement {
 
     static get properties() {
         return { 
-            message: { type: String },
-            desc: { type: String },
-            buttonText: { type: String }
+            welcomeTitle: { type: String },
+            dataSource: { type: String },
+            template: { type: String }
         };
     }
     
     constructor() {
         super();
-        this.title = "Hi Friend";
-        this.desc = "Sign up to get welcome bonus";
-        this.buttonText = "Sign up";
+        this.welcomeTitle = "Hi";
+        this.dataSource = "";
     }
-    
-    static get styles() {
+
+    static get styles() {        
         return css`
             #amfm__overlay {
                 position: fixed;
@@ -108,21 +106,66 @@ class FomoSignUp extends LitElement {
                 outline: none;
                 cursor: pointer;
                 -webkit-appearance: none;
+                transition: 0.18s;
+                animation: shake 1.4s linear infinite both;
+            }
+            .amfm__signUp_btn:hover {
+                box-shadow: 0 5px 5px rgba(0,0,0,0.5);
+                animation: none;
+            }
+            @keyframes shake {
+                0%, 20%, 40%, 100% { transform: translateX(0); }
+                5%, 25% { transform: translateX(-6px); }
+                15%, 35% { transform: translateX(6px); }
             }
         `;
     }
+
+    _setTemplate() {
+        var data = JSON.parse(this.dataSource);
+        switch(this.template) {
+            case 'temp1':
+                return html`
+                    <div id="amfm__overlay" @click="${() => this.hide()}"></div>
+                    <div id="amfm__modal">
+                        <div class="amfm__signUp">
+                            <div class="amfm__signUp_title">Template 1 User</div>
+                            <div class="amfm__signUp_desc">lorem lipsum solor dire</div>
+                            <button class="amfm__signUp_btn">Template 1</button>
+                        </div>
+                    </div>
+                `;
+                break;
+            case 'temp2':
+                return html`
+                    <div id="amfm__overlay" @click="${() => this.hide()}"></div>
+                    <div id="amfm__modal">
+                        <div class="amfm__signUp">
+                        <div class="amfm__signUp_title">Template 2 User</div>
+                        <div class="amfm__signUp_desc">lorem lipsum solor dire</div>
+                        <button class="amfm__signUp_btn">Template 2</button>
+                        </div>
+                    </div>
+                `;
+                break;
+            default:
+                return html`
+                    <div id="amfm__overlay" @click="${() => this.hide()}"></div>
+                    <div id="amfm__modal">
+                        <div class="amfm__signUp">
+                            <div class="amfm__signUp_title">${this.welcomeTitle} ${data.user.name}</div>
+                            <div class="amfm__signUp_desc">${data.competitionName}</div>
+                            <button class="amfm__signUp_btn">${data.label.participate_btn}</button>
+                        </div>
+                    </div>
+                `;
+                break;
+        }
+        
+    }
     
-    render() {
-        return html`
-            <div id="amfm__overlay" @click="${() => this.hide()}"></div>
-            <div id="amfm__modal">
-                <div class="amfm__signUp">
-                    <div class="amfm__signUp_title">${this.title}</div>
-                    <div class="amfm__signUp_desc">${this.desc}</div>
-                    <button class="amfm__signUp_btn">${this.buttonText}</button>
-                </div>
-            </div>
-        `;
+    render() {        
+        return this._setTemplate();
     }
 
     open() {
